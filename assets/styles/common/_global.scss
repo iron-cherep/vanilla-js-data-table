@@ -1,0 +1,51 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+ul {
+  padding-left: 0;
+  list-style: none;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  background-color: #f1f1f1;
+  box-shadow: none;
+  border-radius: 2px;
+  border: 1px solid #f1f1f1;
+}
+
+button {
+  cursor: pointer;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  text-transform: uppercase;
+
+  span {
+    font-family: inherit;
+  }
+}
+
+
+html {
+  font-size: 16px;
+}
+
+body {
+  background: #f4f4f4;
+}
+
+.screen-reader-text,
+.hidden {
+  @include visually-hidden();
+}
