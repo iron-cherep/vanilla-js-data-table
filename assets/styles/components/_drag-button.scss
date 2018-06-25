@@ -1,0 +1,11 @@
+.drag-button {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  font-size: 0;
+  vertical-align: middle;
+  color: transparent;
+  background: url('../images/menu-button.svg') center no-repeat;
+  background-size: 20px;
+  cursor: pointer;
+}

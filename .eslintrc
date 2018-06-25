@@ -1,0 +1,26 @@
+{
+  "parser": "babel-eslint",
+  "extends": "airbnb/base",
+  "globals": {
+    "document": true,
+    "window": true,
+    "localStorage": true
+  },
+  "rules": {
+    "indent": ["error", 2],
+    "no-trailing-spaces": [2, { "skipBlankLines": true }],
+    "prefer-template": 0,
+    "import/prefer-default-export": 0,
+    "import/no-unresolved": 0,
+    "import/no-extraneous-dependencies": 0,
+    "import/extensions": 0,
+    "babel/object-curly-spacing": 0,
+    "class-methods-use-this": 0,
+    "no-console": 0
+  },
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true
+  }
+}

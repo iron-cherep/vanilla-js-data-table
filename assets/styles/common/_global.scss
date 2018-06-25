@@ -2,6 +2,7 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  color: $black;
 }
 
 ul {
@@ -14,10 +15,10 @@ input,
 optgroup,
 select,
 textarea {
-  background-color: #f1f1f1;
+  background-color: white;
   box-shadow: none;
-  border-radius: 2px;
-  border: 1px solid #f1f1f1;
+  border-radius: 0;
+  border: 1px solid $gray;
 }
 
 button {

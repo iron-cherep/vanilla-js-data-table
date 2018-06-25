@@ -1,0 +1,61 @@
+.table {
+  position: relative;
+  margin: 10px auto;
+  width: 100%;
+  background: white;
+  border-collapse: collapse;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -10px;
+    bottom: -1px;
+    left: -10px;
+    z-index: 1;
+    display: block;
+    border: 1px solid $gray;
+    pointer-events: none;
+  }
+}
+
+.table__header {
+  background: $green;
+  border-left: 20px solid $green;
+  border-right: 20px solid $green;
+
+  * {
+    color: white;
+  }
+
+  .table__row {
+    border: none;
+  }
+}
+
+.table__body {
+  border-left: 20px solid white;
+  border-right: 20px solid white;
+}
+
+.table__row {
+  border-bottom: 1px solid $gray;
+}
+
+.table__cell {
+  padding: 12px 20px 8px;
+  vertical-align: center;
+
+  &:first-child {
+    padding-left: 0;
+  }
+
+  &:last-child {
+    // пустая колонка с кнопкой сортировки
+
+    width: 30%;
+    padding-right: 0;
+    text-align: right;
+    user-select: none;
+  }
+}
