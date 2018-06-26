@@ -24,15 +24,19 @@ class App extends Component {
       })
       .catch(console.error);
 
-    this.handleSort = this.handleSort.bind(this);
     this.addHandlers();
   }
 
   addHandlers() {
     this.root.addEventListener('click', this.handleSort);
+    this.root.addEventListener('click', this.handleRemove);
   }
 
-  handleSort(e) {
+  handleRemove = (e) => {
+    console.log(e);
+  };
+
+  handleSort = (e) => {
     const { field, sort, type } = e.target.dataset;
     if (!field || !sort || !type) return;
 
@@ -54,7 +58,7 @@ class App extends Component {
         columns: getColumns(newTable, currentSort),
       });
     }
-  }
+  };
 
   render() {
     const { users, columns } = this.state;

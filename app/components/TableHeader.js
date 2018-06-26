@@ -1,4 +1,5 @@
 import { NONE } from '../helpers/constants';
+import esc from '../helpers/escape';
 
 const TableHeader = (columns) => {
   const sortedColumnIndex = columns.reduce((savedIndex, column, currentIndex) => (
@@ -8,19 +9,19 @@ const TableHeader = (columns) => {
   return `
     <thead 
       class="table__header" 
-      ${sortedColumnIndex !== false ? `data-sorted-column=${sortedColumnIndex}` : ''}
+      ${sortedColumnIndex !== false ? `data-sorted-column=${esc(sortedColumnIndex)}` : ''}
     >
       <tr class="table__row">  
         ${columns.map(column => `
           <td 
             class="table__cell"                        
-            ${column.type ? `data-type="${column.type}"` : ''}
+            ${column.type ? `data-type="${esc(column.type)}"` : ''}
             ${column.field ? `
-                data-field="${column.field}"
-                data-sort="${column.sort ? column.sort : NONE}"
+                data-field="${esc(column.field)}"
+                data-sort="${column.sort ? esc(column.sort) : NONE}"
               ` : ''}        
           >
-            ${column.caption || ''}
+            ${esc(column.caption) || ''}
           </td>
         `).join('')}
       </tr>
