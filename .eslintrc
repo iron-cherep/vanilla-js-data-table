@@ -7,7 +7,7 @@
     "localStorage": true
   },
   "rules": {
-    "indent": ["error", 2],
+    "indent": [2, 2, {"SwitchCase": 1}],
     "no-trailing-spaces": [2, { "skipBlankLines": true }],
     "prefer-template": 0,
     "import/prefer-default-export": 0,

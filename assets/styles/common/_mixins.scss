@@ -7,3 +7,32 @@
   width: 1px;
   overflow: hidden;
 }
+
+@mixin hide-bottom-border($left: true, $width: 20px, $height: 1px) {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: $height * -1;
+    display: block;
+    width: $width;
+    height: $height * 2;
+    background: white;
+
+    @if $left == true {
+      left: 0;
+    } @else {
+      right: 0;
+    }
+  }
+}
+
+@mixin remove-pseudo() {
+  &::before {
+    content: none !important;
+  }
+  &:after {
+    content: none !important;
+  }
+}

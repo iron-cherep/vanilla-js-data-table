@@ -4,25 +4,11 @@
   width: 100%;
   background: white;
   border-collapse: collapse;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: -10px;
-    bottom: -1px;
-    left: -10px;
-    z-index: 1;
-    display: block;
-    border: 1px solid $gray;
-    pointer-events: none;
-  }
+  border: 1px solid $gray;
 }
 
 .table__header {
   background: $green;
-  border-left: 20px solid $green;
-  border-right: 20px solid $green;
 
   * {
     color: white;
@@ -30,31 +16,59 @@
 
   .table__row {
     border: none;
+    user-select: none;
   }
-}
 
-.table__body {
-  border-left: 20px solid white;
-  border-right: 20px solid white;
+  .table__cell {
+    @include remove-pseudo();
+
+    &[data-sort] {
+      cursor: pointer;
+
+      &:not([data-sort="NONE"]) {
+        background: $dark-green;
+      }
+
+      &:hover {
+        background: $dark-green;
+      }
+    }
+  }
+
+  // фон для выделенных ячеек в зависимости от data-атрибута таблицы
+  @for $i from 0 through 10 {
+    &[data-sorted-column="#{$i}"] {
+      & + .table__body .table__cell:nth-child(#{$i + 1}) {
+        background: $highlighted;
+      }
+    }
+  }
 }
 
 .table__row {
   border-bottom: 1px solid $gray;
+
+  &:last-child {
+    .table__cell {
+      @include remove-pseudo();
+    }
+  }
 }
 
 .table__cell {
   padding: 12px 20px 8px;
   vertical-align: center;
+  transition: 0.2s;
 
   &:first-child {
-    padding-left: 0;
+    @include hide-bottom-border();
   }
 
   &:last-child {
     // пустая колонка с кнопкой сортировки
+    @include hide-bottom-border(false);
 
     width: 30%;
-    padding-right: 0;
     text-align: right;
     user-select: none;
   }

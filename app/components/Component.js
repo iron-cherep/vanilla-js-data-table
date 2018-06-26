@@ -3,8 +3,8 @@ class Component {
     this.state = {};
   }
 
-  setState(object) {
-    this.state = { ...this.state, ...object };
+  setState(newState) {
+    this.state = { ...this.state, ...newState };
     this.render();
   }
 

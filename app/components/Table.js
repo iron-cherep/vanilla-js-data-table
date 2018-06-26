@@ -15,8 +15,8 @@ const Table = (props) => {
               <img class="avatar" src="${user.avatar}" alt="${user.name}">
               <span class="table__name">${user.name}</span>
             </td>
-            <td class="table__cell">${user.stories}</td>
             <td class="table__cell">${user.rating}</td>
+            <td class="table__cell">${user.stories}</td>
             <td class="table__cell">${user.comments}</td>
             <td class="table__cell">${formatDate(user.date)}</td>
             <td class="table__cell">
