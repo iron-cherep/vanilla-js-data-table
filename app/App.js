@@ -2,6 +2,7 @@ import Api from './api';
 import Component from './components/Component';
 import Table from './components/Table';
 import SearchField from './components/SearchField';
+import Alert from './components/Alert';
 import getColumns from './helpers/getColumns';
 import sortTable from './helpers/sortTable';
 
@@ -16,10 +17,13 @@ class App extends Component {
     new Api().getData()
       .then(json => JSON.parse(json))
       .then((data) => {
+        let users = data;
+        if (!Array.isArray(users)) users = [];
+
         this.setState({
-          unsortedUsers: data,
-          users: data,
-          columns: getColumns(data),
+          unsortedUsers: users,
+          users,
+          columns: getColumns(users),
         });
       })
       .catch(console.error);
@@ -33,7 +37,15 @@ class App extends Component {
   }
 
   handleRemove = (e) => {
-    console.log(e);
+    const row = e.target.closest('.table__row[data-user]');
+    if (!row || !e.ctrlKey) return;
+
+    const { user } = row.dataset;
+    if (!user) return;
+
+    this.setState({
+      users: this.state.users.filter(item => item.name !== user),
+    });
   };
 
   handleSort = (e) => {
@@ -65,8 +77,12 @@ class App extends Component {
 
     this.root.innerHTML = `
       <div class="table-widget">
-        ${SearchField()}
-        ${Table({ users, columns })}
+        ${users && users.length > 0 ? `
+          ${SearchField()}
+          ${Table({ users, columns })}  
+        ` : `
+          ${Alert({ message: 'К сожалению, пользователи не найдены, попробуйте перезагрузить страницу!' })}
+        `}
       </div> 
     `;
   }

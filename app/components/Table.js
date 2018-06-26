@@ -11,7 +11,7 @@ const Table = (props) => {
       
       <tbody class="table__body">
         ${users.map(user => `
-          <tr class="table__row" data-user="${esc(user.user)}">
+          <tr class="table__row" data-user="${esc(user.name)}">
             <td class="table__cell">
               <img class="avatar" src="${esc(user.avatar)}" alt="${user.name}">
               <span class="table__name">${esc(user.name)}</span>
