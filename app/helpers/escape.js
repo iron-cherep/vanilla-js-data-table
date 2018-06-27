@@ -9,7 +9,7 @@ const htmlEscapes = {
 const reUnescapedHtml = /[&<>"']/g;
 const reHasUnescapedHtml = RegExp(reUnescapedHtml.source);
 
-/** Возвращает строку с экранированными html-симфолами */
+/** Возвращает строку с экранированными html-символами */
 function escape(string) {
   return (string && reHasUnescapedHtml.test(string))
     ? string.replace(reUnescapedHtml, chr => htmlEscapes[chr])
