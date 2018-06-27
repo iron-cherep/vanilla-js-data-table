@@ -1,3 +1,9 @@
+/**
+ * Обёртка на Promise для XMLHttpRequest
+ *
+ * @param options
+ * @returns {Promise<any>}
+ */
 const request = options => new Promise((resolve, reject) => {
   if (!options || !options.url) reject(new Error('Не указан url для запроса'));
 

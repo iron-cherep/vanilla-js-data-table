@@ -2,12 +2,14 @@ import Api from './api';
 import Component from './components/Component';
 import Table from './components/Table';
 import SearchField from './components/SearchField';
+import Alert from './components/Alert';
 import getColumns from './helpers/getColumns';
 import sortTable from './helpers/sortTable';
+import searchUsers from './helpers/searchUsers';
 
 class App extends Component {
   constructor(element) {
-    super();
+    super(element);
 
     if (!element) return;
 
@@ -15,24 +17,57 @@ class App extends Component {
 
     new Api().getData()
       .then(json => JSON.parse(json))
-      .then((data) => {
+      .then((users) => {
+        if (!users || !Array.isArray(users)) {
+          this.setState({ alert: 'Пользователи не найдены, попробуйте перезагрузить страницу!' });
+          return;
+        }
+
         this.setState({
-          unsortedUsers: data,
-          users: data,
-          columns: getColumns(data),
+          unsortedUsers: users,
+          users,
+          columns: getColumns(users),
         });
       })
       .catch(console.error);
 
-    this.handleSort = this.handleSort.bind(this);
     this.addHandlers();
   }
 
   addHandlers() {
     this.root.addEventListener('click', this.handleSort);
+    this.root.addEventListener('click', this.handleRemove);
+    this.root.addEventListener('input', this.handleSearch);
   }
 
-  handleSort(e) {
+  handleComponentMount() {
+    this.setFocus();
+  }
+
+  setFocus = () => {
+    const { focus } = this.state;
+    if (!focus) return;
+
+    const input = this.root.querySelector(focus);
+    if (!input) return;
+
+    input.focus();
+    input.setSelectionRange(input.value.length, input.value.length);
+  };
+
+  handleRemove = (e) => {
+    const row = e.target.closest('.table__row[data-user]');
+    if (!row || !e.ctrlKey) return;
+
+    const { user } = row.dataset;
+    if (!user) return;
+
+    this.setState({
+      users: this.state.users.filter(item => item.name !== user),
+    });
+  };
+
+  handleSort = (e) => {
     const { field, sort, type } = e.target.dataset;
     if (!field || !sort || !type) return;
 
@@ -44,8 +79,11 @@ class App extends Component {
     });
 
     if (!newTable) {
+      const { unsortedUsers, search } = this.state;
+      const unsortedUsersFilteredBySearch = searchUsers({ users: unsortedUsers, search });
+
       this.setState({
-        users: this.state.unsortedUsers,
+        users: unsortedUsersFilteredBySearch,
         columns: getColumns(this.state.unsortedUsers),
       });
     } else {
@@ -54,15 +92,44 @@ class App extends Component {
         columns: getColumns(newTable, currentSort),
       });
     }
-  }
+  };
+
+  handleSearch = (e) => {
+    if (e.target.name !== 'search-field') {
+      this.setState({ focus: null });
+      return;
+    }
+
+    const { value } = e.target;
+    const users = searchUsers({ users: this.state.unsortedUsers, search: value });
+
+    this.setState({
+      users,
+      search: value,
+      focus: '#search-field',
+      alert: users.length === 0 ? 'Пользователи не найдены, попробуйте изменить запрос!' : null,
+    });
+  };
 
   render() {
-    const { users, columns } = this.state;
+    const {
+      users,
+      columns,
+      alert,
+      search,
+    } = this.state;
 
     this.root.innerHTML = `
       <div class="table-widget">
-        ${SearchField()}
-        ${Table({ users, columns })}
+        ${SearchField({ search })}
+        
+        ${users && users.length > 0 ? `
+          ${Table({ users, columns })}
+        ` : ''}
+        
+        ${alert ? `
+          ${Alert({ message: this.state.alert })}
+        ` : ''}
       </div> 
     `;
   }

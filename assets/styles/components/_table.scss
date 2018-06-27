@@ -2,6 +2,7 @@
   position: relative;
   margin: 10px auto;
   width: 100%;
+  table-layout: fixed;
   background: white;
   border-collapse: collapse;
   border: 1px solid $gray;
@@ -23,7 +24,19 @@
     @include remove-pseudo();
 
     &[data-sort] {
+      width: 110px;
       cursor: pointer;
+      user-select: none;
+
+      &[data-field="name"] {
+        width: 250px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      &[data-field="date"] {
+        width: 160px;
+      }
 
       &:not([data-sort="NONE"]) {
         background: $dark-green;
@@ -40,6 +53,10 @@
     &[data-sorted-column="#{$i}"] {
       & + .table__body .table__cell:nth-child(#{$i + 1}) {
         background: $highlighted;
+
+        &::before {
+          background: $highlighted;
+        }
       }
     }
   }
