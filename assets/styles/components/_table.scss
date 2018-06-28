@@ -21,8 +21,6 @@
   }
 
   .table__cell {
-    @include remove-pseudo();
-
     &[data-sort] {
       width: 110px;
       cursor: pointer;
@@ -73,17 +71,17 @@
 }
 
 .table__cell {
+  position: relative;
+  z-index: 1;
   padding: 12px 20px 8px;
   vertical-align: center;
   transition: 0.2s;
 
   &:first-child {
-    @include hide-bottom-border();
   }
 
   &:last-child {
     // пустая колонка с кнопкой сортировки
-    @include hide-bottom-border(false);
 
     width: 30%;
     text-align: right;

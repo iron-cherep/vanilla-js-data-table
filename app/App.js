@@ -1,18 +1,21 @@
 import Api from './api';
+
 import Component from './components/Component';
 import Table from './components/Table';
 import SearchField from './components/SearchField';
 import Alert from './components/Alert';
+
+import DragAndDrop from './helpers/DragAndDrop';
 import getColumns from './helpers/getColumns';
 import sortTable from './helpers/sortTable';
 import searchUsers from './helpers/searchUsers';
+import moveArrayElement from './helpers/moveArrayElement';
 
 class App extends Component {
   constructor(element) {
     super(element);
 
     if (!element) return;
-
     this.root = element;
 
     new Api().getData()
@@ -24,14 +27,18 @@ class App extends Component {
         }
 
         this.setState({
-          unsortedUsers: users,
           users,
+          unsortedUsers: users,
           columns: getColumns(users),
         });
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        this.setState({ alert: 'Ошибка при получении данных, попробуйте перезагрузить страницу!' });
+      });
 
     this.addHandlers();
+    new DragAndDrop(this.root, this.handleDragEnd).init();
   }
 
   addHandlers() {
@@ -44,6 +51,42 @@ class App extends Component {
     this.setFocus();
   }
 
+  render() {
+    const {
+      users,
+      columns,
+      alert,
+      search,
+    } = this.state;
+
+    this.root.innerHTML = `
+      <div class="table-widget">
+        ${SearchField({ search })}
+        
+        ${users && users.length > 0 ? `
+          ${Table({ users, columns })}
+        ` : ''}
+        
+        ${alert ? `
+          ${Alert({ message: this.state.alert })}
+        ` : ''}
+      </div> 
+    `;
+  }
+
+  handleDragEnd = ({ target, moved }) => {
+    if (!target || !moved) return;
+
+    const targetIndex = this.state.users.findIndex(user => user.name === target.dataset.user);
+    const movedIndex = this.state.users.findIndex(user => user.name === moved.dataset.user);
+    const usersWithChangedOrder = moveArrayElement(this.state.users, movedIndex, targetIndex);
+
+    this.setState({
+      unsortedUsers: usersWithChangedOrder,
+      users: usersWithChangedOrder,
+    });
+  };
+
   setFocus = () => {
     const { focus } = this.state;
     if (!focus) return;
@@ -53,18 +96,6 @@ class App extends Component {
 
     input.focus();
     input.setSelectionRange(input.value.length, input.value.length);
-  };
-
-  handleRemove = (e) => {
-    const row = e.target.closest('.table__row[data-user]');
-    if (!row || !e.ctrlKey) return;
-
-    const { user } = row.dataset;
-    if (!user) return;
-
-    this.setState({
-      users: this.state.users.filter(item => item.name !== user),
-    });
   };
 
   handleSort = (e) => {
@@ -94,6 +125,18 @@ class App extends Component {
     }
   };
 
+  handleRemove = (e) => {
+    const row = e.target.closest('.table__row[data-user]');
+    if (!row || !e.ctrlKey) return;
+
+    const { user } = row.dataset;
+    if (!user) return;
+
+    this.setState({
+      users: this.state.users.filter(item => item.name !== user),
+    });
+  };
+
   handleSearch = (e) => {
     if (e.target.name !== 'search-field') {
       this.setState({ focus: null });
@@ -110,29 +153,6 @@ class App extends Component {
       alert: users.length === 0 ? 'Пользователи не найдены, попробуйте изменить запрос!' : null,
     });
   };
-
-  render() {
-    const {
-      users,
-      columns,
-      alert,
-      search,
-    } = this.state;
-
-    this.root.innerHTML = `
-      <div class="table-widget">
-        ${SearchField({ search })}
-        
-        ${users && users.length > 0 ? `
-          ${Table({ users, columns })}
-        ` : ''}
-        
-        ${alert ? `
-          ${Alert({ message: this.state.alert })}
-        ` : ''}
-      </div> 
-    `;
-  }
 }
 
 export default App;

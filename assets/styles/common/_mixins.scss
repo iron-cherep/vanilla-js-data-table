@@ -8,16 +8,14 @@
   overflow: hidden;
 }
 
-@mixin hide-bottom-border($left: true, $width: 20px, $height: 1px) {
-  position: relative;
-
+@mixin hide-bottom-border($left: true, $width: 20px) {
   &::before {
     content: '';
     position: absolute;
-    bottom: $height * -1;
+    top: 0;
+    bottom: -1px;
     display: block;
     width: $width;
-    height: $height * 2;
     background: white;
 
     @if $left == true {
