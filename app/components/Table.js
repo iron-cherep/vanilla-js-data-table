@@ -12,6 +12,7 @@ const Table = (props) => {
       <tbody class="table__body">
         ${users.map(user => `
           <tr class="table__row" data-user="${esc(user.name)}">
+            <td class="table__cell table__cell--spacer ${columns[0].highlighted ? 'table__cell--hightlighted' : ''}"></td>
             <td class="table__cell">
               <img class="avatar" src="${esc(user.avatar)}" alt="${user.name}">
               <span class="table__name">${esc(user.name)}</span>
@@ -23,6 +24,7 @@ const Table = (props) => {
             <td class="table__cell">
               <span class="drag-button">Переместить в списке</span>
             </td>
+            <td class="table__cell table__cell--spacer"></td>
           </tr>
         `).join('')}
       </tbody>

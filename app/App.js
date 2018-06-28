@@ -1,14 +1,15 @@
 import Api from './api';
 
 import Component from './components/Component';
-import Table from './components/Table';
 import SearchField from './components/SearchField';
+import Table from './components/Table';
 import Alert from './components/Alert';
 
-import DragAndDrop from './helpers/DragAndDrop';
-import getColumns from './helpers/getColumns';
-import sortTable from './helpers/sortTable';
-import searchUsers from './helpers/searchUsers';
+import DragAndDrop from './methods/DragAndDrop';
+import getColumns from './methods/getColumns';
+import sortTable from './methods/sortTable';
+import searchUsers from './methods/searchUsers';
+
 import moveArrayElement from './helpers/moveArrayElement';
 
 class App extends Component {
@@ -74,6 +75,13 @@ class App extends Component {
     `;
   }
 
+  /**
+   * Перемещает заданный элемент на заданную позицию.
+   * Callback-функция для drag-and-drop.
+   *
+   * @param target - элемент для замены
+   * @param moved - перемещаемый элемент
+   */
   handleDragEnd = ({ target, moved }) => {
     if (!target || !moved) return;
 
@@ -87,6 +95,9 @@ class App extends Component {
     });
   };
 
+  /**
+   * Устанавливает фокус на сохранённом в состоянии элементе после перерисовки компонента.
+   */
   setFocus = () => {
     const { focus } = this.state;
     if (!focus) return;
@@ -98,6 +109,12 @@ class App extends Component {
     input.setSelectionRange(input.value.length, input.value.length);
   };
 
+  /**
+   * Обрабатывает клики по заголовкам колонок и сортирует элементы в заданном порядке.
+   * Порядок следования направлений сортировки: ASC => DESC => NONE.
+   *
+   * @param e
+   */
   handleSort = (e) => {
     const { field, sort, type } = e.target.dataset;
     if (!field || !sort || !type) return;
@@ -125,6 +142,11 @@ class App extends Component {
     }
   };
 
+  /**
+   * Удаляет пользователя из таблицы по клику с нажатым Ctrl
+   *
+   * @param e
+   */
   handleRemove = (e) => {
     const row = e.target.closest('.table__row[data-user]');
     if (!row || !e.ctrlKey) return;
@@ -132,11 +154,22 @@ class App extends Component {
     const { user } = row.dataset;
     if (!user) return;
 
+    const filteredUsers = this.state.users.filter(item => item.name !== user);
+    const filteredUnsortedUsers = this.state.unsortedUsers.filter(item => item.name !== user);
+
     this.setState({
-      users: this.state.users.filter(item => item.name !== user),
+      unsortedUsers: filteredUnsortedUsers,
+      users: filteredUsers,
+      alert: filteredUsers.length === 0 ? 'Пользователи не найдены, попробуйте перезагрузить страницу!' : null,
     });
   };
 
+  /**
+   * Осуществляет поиск/фильтрацию таблицы, обновляя параметры поиска
+   * динамически во время заполнения поля пользователем.
+   *
+   * @param e
+   */
   handleSearch = (e) => {
     if (e.target.name !== 'search-field') {
       this.setState({ focus: null });

@@ -1,5 +1,5 @@
 /**
- * Перемещает элемента массива с указанной позиции на заданную
+ * Перемещает элемента массива с указанной позиции на заданную.
  *
  * @param arr
  * @param from
@@ -19,7 +19,7 @@ const moveArrayElement = (arr, from, to) => {
   }
   if (to >= array.length) {
     let k = toIndex - array.length;
-    while ((k--) + 1) {
+    while ((k--) + 1) { // eslint-disable-line no-plusplus
       array.push(undefined);
     }
   }
