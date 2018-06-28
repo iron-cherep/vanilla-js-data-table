@@ -3,10 +3,10 @@ import {
   STRING,
   DATE,
   NONE,
-} from './constants';
+} from '../constants';
 
 /**
- * Список полей для формирования колонок
+ * Список полей для формирования колонок.
  */
 const allowedColumns = [
   {
@@ -37,7 +37,23 @@ const allowedColumns = [
 ];
 
 /**
- * Сформировать массив колонок для таблицы из полей объекта пользователя
+ * Добавить вспомогательные колонки для макета.
+ *
+ * @param columns
+ * @returns []
+ */
+const addLayoutColumns = (columns) => {
+  const preparedColumns = columns;
+  const spacerObject = { spacer: true };
+  const highlightedSpacer = { spacer: true, highlighted: true };
+  preparedColumns.unshift(preparedColumns[0].sort !== NONE ? highlightedSpacer : spacerObject);
+  preparedColumns.push(spacerObject);
+  preparedColumns.push(spacerObject);
+  return preparedColumns;
+};
+
+/**
+ * Сформировать массив колонок для таблицы из полей объекта пользователя.
  *
  * @param users
  * @param currentSort
@@ -66,10 +82,7 @@ const getColumns = (users, currentSort) => {
     });
   });
 
-  /** Последняя пустая колонка */
-  columns.push('');
-
-  return columns;
+  return addLayoutColumns(columns);
 };
 
 export default getColumns;

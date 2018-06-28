@@ -1,7 +1,7 @@
-import escapeRegExp from './escapeRegExp';
+import escapeRegExp from '../helpers/escapeRegExp';
 
 /**
- * Формирует регулярное выражение для поиска на основе пользовательского ввода
+ * Формирует регулярное выражение для поиска на основе пользовательского ввода.
  *
  * @param input
  * @returns {RegExp}
@@ -14,7 +14,7 @@ const userInputToRegExp = (input) => {
 };
 
 /**
- * Фильтрует список пользователей по имени
+ * Фильтрует список пользователей по имени.
  *
  * @param params
  * @returns {*}
