@@ -92,6 +92,7 @@ class App extends Component {
     this.setState({
       unsortedUsers: usersWithChangedOrder,
       users: usersWithChangedOrder,
+      columns: getColumns(usersWithChangedOrder),
     });
   };
 
