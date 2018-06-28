@@ -1,3 +1,5 @@
+import getVerticalOffset from '../helpers/getVerticalOffser';
+
 class DragAndDrop {
   constructor(element, callback) {
     this.container = element;
@@ -8,11 +10,8 @@ class DragAndDrop {
     this.controlClass = 'drag-button';
 
     this.element = null;
-    this.elementY = 0;
     this.mouseY = 0;
     this.isDragged = false;
-    this.reachedTop = false;
-    this.reachedBottom = false;
   }
 
   init() {
@@ -31,20 +30,12 @@ class DragAndDrop {
   }
 
   /**
-   * Установить границы свободного перетаскивания элемента.
-   */
-  setDragBoundaries() {
-    if (!this.body) this.body = this.container.querySelector(this.bodySelector);
-    this.topBoundary = 0;
-    this.bottomBoundary = this.body.offsetHeight + this.element.offsetHeight / 2;
-  }
-
-  /**
    * Проверить пересекается ли элемент с другими элементами из списка.
    * Если пересекается — вызывать callback с целевым элементом.
    */
   checkOverlap() {
-    const topRelativeToTable = this.getTopRelativeToTable();
+    if (!this.clone || !this.body) this.endDrag();
+    const topRelativeToTable = getVerticalOffset(this.clone, this.body);
     let overlappingRow;
 
     this.rows.reduce((summaryHeight, row) => {
@@ -65,23 +56,38 @@ class DragAndDrop {
   }
 
   /**
-   * Получить смещение элемента относительно таблицы.
+   * Клонируем перемещаемый элемент и рендерим его в отдельную таблицу.
    *
-   * @returns {number}
+   * @param element
    */
-  getTopRelativeToTable() {
-    const elementTop = this.element.getBoundingClientRect().top;
-    const tableTop = this.body.getBoundingClientRect().top;
-    return elementTop - tableTop;
+  setClone(element) {
+    const clone = element.cloneNode(true);
+    const fakeTable = document.createElement('table');
+    const tableBody = document.createElement('tbody');
+    fakeTable.className = 'table  table--overlay';
+    tableBody.className = 'table__body';
+    tableBody.appendChild(clone);
+    fakeTable.appendChild(tableBody);
+
+    const { top, left } = this.element.getBoundingClientRect();
+    fakeTable.style.width = `${this.element.offsetWidth}px`;
+    fakeTable.style.position = 'absolute';
+    fakeTable.style.top = `${top}px`;
+    fakeTable.style.left = `${left}px`;
+
+    this.container.appendChild(fakeTable);
+    this.clone = fakeTable;
   }
 
   /**
    * Удалить сохранённые ссылки на элементы и снять флаг перетаскивания.
    */
   endDrag() {
+    this.clone.remove();
     this.body = null;
     this.element = null;
     this.rows = null;
+    this.clone = null;
     this.isDragged = false;
   }
 
@@ -96,20 +102,16 @@ class DragAndDrop {
     this.element = row;
     this.mouseY = e.clientY;
 
-    if (!this.topBoundary || !this.bottomBoundary) this.setDragBoundaries();
+    this.setClone(row);
 
     const tableRows = [].slice.call(this.container.querySelectorAll(this.rowSelector));
     tableRows.shift();
     this.rows = tableRows;
+    this.body = this.container.querySelector(this.bodySelector);
   };
 
   onMouseUp = () => {
-    if (!this.element) return;
-
-    this.element.style.transform = null;
-    this.element.style.background = 'white';
-    this.element.style.transition = '0.2s';
-    this.element.style.cursor = 'default';
+    if (!this.clone) return;
 
     this.checkOverlap();
   };
@@ -118,15 +120,7 @@ class DragAndDrop {
     if (!this.isDragged) return;
 
     const deltaY = e.clientY - this.mouseY;
-    this.reachedTop = (this.element.offsetTop + deltaY) < this.topBoundary;
-    this.reachedBottom = (this.element.offsetTop + deltaY) > this.bottomBoundary;
-
-    if (this.reachedTop || this.reachedBottom) return;
-
-    this.element.style.transform = `translate3d(0, ${this.elementY + deltaY}px, 1000px)`;
-    this.element.style.background = 'rgba(255, 253, 199, 0.5)';
-    this.element.style.transition = 'none';
-    this.element.style.cursor = 'grab';
+    this.clone.style.transform = `translate3d(0, ${deltaY}px, 1000px)`;
   };
 }
 

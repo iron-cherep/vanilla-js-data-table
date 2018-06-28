@@ -6,6 +6,13 @@
   background: white;
   border-collapse: collapse;
   border: 1px solid $gray;
+
+  &--overlay {
+    background: fade-out($highlighted, 0.1);
+    transition: none;
+    cursor: grab;
+    box-shadow: 0 0 15px 5px fade-out($gray, 0.5);
+  }
 }
 
 .table__header {
@@ -21,6 +28,8 @@
   }
 
   .table__cell {
+    border: none;
+
     &[data-sort] {
       width: 110px;
       cursor: pointer;
@@ -28,7 +37,7 @@
 
       &[data-field="name"] {
         position: relative;
-        width: 250px;
+        width: $nameWidth;
         white-space: nowrap;
         text-overflow: ellipsis;
 
@@ -46,7 +55,7 @@
       }
 
       &[data-field="date"] {
-        width: 160px;
+        width: $dateWidth;
       }
 
       &:not([data-sort="NONE"]) {
@@ -74,10 +83,13 @@
 }
 
 .table__row {
-
+  &:first-of-type .table__cell {
+    border-top: none;
+  }
 }
 
 .table__cell {
+  width: 110px;
   padding: 12px 20px 8px;
   vertical-align: center;
   transition: 0.2s;
@@ -97,6 +109,14 @@
 
   &--hightlighted {
     background: $highlighted;
+  }
+
+  &:nth-child(2) {
+    width: $nameWidth;
+  }
+
+  &:nth-last-child(3) {
+    width: $dateWidth;
   }
 
   &:nth-last-child(2) {

@@ -8,4 +8,8 @@
   background: url('../images/menu-button.svg') center no-repeat;
   background-size: 18px 16px;
   cursor: pointer;
+
+  &:active {
+    cursor: grab;
+  }
 }
